@@ -1,0 +1,11 @@
+Tester Rank 1: mdhimOpen returned MDHIM_SUCCESS (0)
+Rank 0 mdhimDelete: Error - There is no global range data. Please flush before calling delete.
+Tester Rank 1: mdhimDelete returned new current key  with record number 0.
+Tester Rank 1: mdhimDelete returned MDHIM_ERROR_NOT_FOUND (2010)
+Tester Rank 1: WARNING - Problem with mdhimDelete; error code 2010
+Tester Rank 1: mdhimFinalize returned MDHIM_SUCCESS (0)
+2 Rank 1 Job time: 0.022785 seconds.
+2 Rank 1: Successfully insert 0 records in 0.000000 seconds.
+2 Rank 1: mdhimFlush took 0.000000 seconds.
+2 Rank 1: mdhimDelete took 0.000938 seconds.
+2 Rank 0 Job time: 0.024400 seconds.

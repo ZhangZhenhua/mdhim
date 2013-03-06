@@ -1,0 +1,14 @@
+Tester Rank 1: mdhimOpen returned MDHIM_SUCCESS (0)
+isamInsert Error: Unable to insert keys bkey0  (all keys bkey0 ) pbl_errno 1002, errno 0
+Tester Rank 1: mdhimInsert returned MDHIM_SUCCESS (0)
+Range list (start range, num records, min , max):   0,   3 akey0 ckey0 
+Tester Rank 1: mdhimFlush returned with 1 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimFinalize returned MDHIM_SUCCESS (0)
+2 Rank 1 Job time: 0.028264 seconds.
+2 Rank 1: Successfully insert 3 records in 0.003542 seconds.
+2 Rank 1: mdhimFlush took 0.003542 seconds.
+2 Rank 1: mdhimDelete took 0.000000 seconds.
+2 Rank 1 Range Data: 1 ranges.
+2 Rank 1 Range Data 0: 3 records 0 start range.
+2 Rank 0 Job time: 0.030029 seconds.

@@ -1,0 +1,26 @@
+Tester Rank 1: mdhimOpen returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimInsert returned MDHIM_SUCCESS (0)
+Range list (start range, num records, min , max): 100,   5 dkey0 zkey0
+Tester Rank 1: mdhimFlush returned with 1 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key dkey0 with record number 1.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key ekey0 with record number 2.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimDelete returned new current key ekey0 with record number 1.
+Tester Rank 1: mdhimDelete returned MDHIM_SUCCESS (0)
+Range list (start range, num records, min , max): 100,   4 ekey0 zkey0
+Tester Rank 1: mdhimFlush returned with 1 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key ekey0 with record number 1.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key lkey0 with record number 2.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimFinalize returned MDHIM_SUCCESS (0)
+2 Rank 1 Job time: 0.031877 seconds.
+2 Rank 1: Successfully insert 5 records in 0.002645 seconds.
+2 Rank 1: mdhimFlush took 0.002645 seconds.
+2 Rank 1: mdhimDelete took 0.000260 seconds.
+2 Rank 1 Range Data: 1 ranges.
+2 Rank 1 Range Data 0: 4 records 100 start range.
+2 Rank 0 Job time: 0.032353 seconds.

@@ -1,0 +1,24 @@
+Tester Rank 1: mdhimOpen returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimInsert returned MDHIM_SUCCESS (0)
+Range list (start range, num records, min , max):   0,   1 akey0 akey0
+Tester Rank 1: mdhimFlush returned with 1 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key akey0 with record number 1.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimDelete returned new current key  with record number -1.
+Tester Rank 1: mdhimDelete returned MDHIM_SUCCESS (0)
+Range list (start range, num records, min , max):   0,   0 akey0 akey0
+Tester Rank 1: mdhimFlush returned with 0 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Rank 0 mdhimGet: Error - There is no flush range data.
+Tester Rank 1: mdhimGet returned key  with record number -1.
+Tester Rank 1: mdhimGet returned MDHIM_ERROR_DB_GET_KEY (2018)
+Tester Rank 1: WARNING - Problem with mdhimGet; error code 2018
+Tester Rank 1: mdhimFinalize returned MDHIM_SUCCESS (0)
+2 Rank 1 Job time: 0.032777 seconds.
+2 Rank 1: Successfully insert 1 records in 0.001297 seconds.
+2 Rank 1: mdhimFlush took 0.001297 seconds.
+2 Rank 1: mdhimDelete took 0.001864 seconds.
+2 Rank 1 Range Data: 1 ranges.
+2 Rank 1 Range Data 0: 0 records 0 start range.
+2 Rank 0 Job time: 0.043566 seconds.

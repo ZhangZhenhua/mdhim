@@ -1,0 +1,31 @@
+Tester Rank 1: mdhimOpen returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimInsert returned MDHIM_SUCCESS (0)
+Range list (start range, num records, min , max):   0,   3 akey0 ckey0 
+Tester Rank 1: mdhimFlush returned with 1 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key akey0 with record number 1.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key bkey0 with record number 2.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key ckey0 with record number 3.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Rank 0 mdhimDelete: Error - Unable to find index of start range for key wkey in flushed range data list.
+Tester Rank 1: mdhimDelete returned new current key  with record number 3.
+Tester Rank 1: mdhimDelete returned MDHIM_ERROR_IDX_RANGE (2007)
+Tester Rank 1: WARNING - Problem with mdhimDelete; error code 2007
+Tester Rank 1: mdhimFlush returned with 1 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key akey0 with record number 1.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key bkey0 with record number 2.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key ckey0 with record number 3.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimFinalize returned MDHIM_SUCCESS (0)
+2 Rank 1 Job time: 0.035258 seconds.
+2 Rank 1: Successfully insert 3 records in 0.003009 seconds.
+2 Rank 1: mdhimFlush took 0.003009 seconds.
+2 Rank 1: mdhimDelete took 0.000934 seconds.
+2 Rank 1 Range Data: 1 ranges.
+2 Rank 1 Range Data 0: 3 records 0 start range.
+2 Rank 0 Job time: 0.037179 seconds.

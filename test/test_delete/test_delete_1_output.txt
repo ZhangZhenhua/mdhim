@@ -1,0 +1,28 @@
+Tester Rank 1: mdhimOpen returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimInsert returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimFlush returned with 1 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key akey0 with record number 1.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key bkey0 with record number 2.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key ckey0 with record number 3.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimDelete returned new current key ckey0 with record number 2.
+Tester Rank 1: mdhimDelete returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimFlush returned with 1 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key akey0 with record number 1.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimGet returned key ckey0 with record number 2.
+Tester Rank 1: mdhimGet returned MDHIM_SUCCESS (0)
+Rank 0 mdhimGet: Error - Unable to get next key to ckey0 because no next key exists.
+Tester Rank 1: mdhimGet returned key  with record number -1.
+Tester Rank 1: mdhimGet returned MDHIM_ERROR_NOT_FOUND (2010)
+Tester Rank 1: WARNING - key not found with mdhimGet; error code 2010
+Tester Rank 1: mdhimFinalize returned MDHIM_SUCCESS (0)
+2 Rank 1 Job time: 0.019990 seconds.
+2 Rank 1: Successfully insert 3 records in 0.002334 seconds.
+2 Rank 1 Range Data: 1 ranges.
+2 Rank 1 Range Data 0: 2 records 0 start range.
+2 Rank 0 Job time: 0.020482 seconds.

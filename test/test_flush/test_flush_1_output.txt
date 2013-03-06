@@ -1,0 +1,9 @@
+Tester Rank 1: mdhimOpen returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimFlush returned with 0 flush ranges.
+Tester Rank 1: mdhimFlush returned MDHIM_SUCCESS (0)
+Tester Rank 1: mdhimFinalize returned MDHIM_SUCCESS (0)
+2 Rank 1 Job time: 0.006498 seconds.
+2 Rank 1: Successfully insert 0 records in 0.000000 seconds.
+2 Rank 1: mdhimFlush took 0.000000 seconds.
+2 Rank 1: mdhimDelete took 0.000000 seconds.
+2 Rank 0 Job time: 0.008025 seconds.
