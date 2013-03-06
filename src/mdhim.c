@@ -2578,7 +2578,7 @@ int mdhimOpen(MDHIMFD_t *fd, char *recordPath, int mode, int numKeys, int *keyTy
 
     PRINT_OPEN_DEBUG ("Rank %d mdhimOpen: I am a range server!\n", fd->mdhim_rank);
 
-    // XX error when directory exists. Need to send back error no
+    // Check if the file exists.  If it does and it is a directory, then don't try to make the directory
     if ((err = stat(fd->path, &st)) < 0 || S_ISDIR(st.st_mode) == 0) {
       if(mkdir(fd->path,S_IRWXU) != 0) {
 	printf("Rank %d: mdhimOpen Error - Unable to create the directory %s.\n", 
