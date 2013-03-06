@@ -2468,6 +2468,7 @@ int mdhimOpen(MDHIMFD_t *fd, char *recordPath, int mode, int numKeys, int *keyTy
   char data[10];
   int err, open_error = MDHIM_SUCCESS;
   int i, j;
+  struct stat st;
   MPI_Request open_request, error_request;
 
   PRINT_OPEN_DEBUG ("****************Rank %d Entered mdhimOpen****************\n", fd->mdhim_rank);
@@ -2578,9 +2579,12 @@ int mdhimOpen(MDHIMFD_t *fd, char *recordPath, int mode, int numKeys, int *keyTy
     PRINT_OPEN_DEBUG ("Rank %d mdhimOpen: I am a range server!\n", fd->mdhim_rank);
 
     // XX error when directory exists. Need to send back error no
-    if(mkdir(fd->path,S_IRWXU) != 0){
-      printf("Rank %d: mdhimOpen Error - Unable to create the directory %s.\n", fd->mdhim_rank, fd->path);
-      return MDHIM_ERROR_BASE;
+    if ((err = stat(fd->path, &st)) < 0 || S_ISDIR(st.st_mode) == 0) {
+      if(mkdir(fd->path,S_IRWXU) != 0) {
+	printf("Rank %d: mdhimOpen Error - Unable to create the directory %s.\n", 
+	       fd->mdhim_rank, fd->path, err);
+	return MDHIM_ERROR_BASE;
+      }
     }
     
     PRINT_OPEN_DEBUG ("Rank %d mdhimOpen: Before error MPI_Irecv.\n", fd->mdhim_rank);
