@@ -858,12 +858,12 @@ int getInput(int my_rank, char *fname, char *mdhim_fname, struct options *o, int
 	  MPI_Abort(MPI_COMM_WORLD, 100);
 	}
 	for(i = 0; i < o->numRangeSvrs; i++){
-	  if( (o->rangeSvrs[i] = (char *)malloc(MAX_HOST_NAME_LEN + 1)) == NULL){
+	  if( (o->rangeSvrs[i] = (char *)malloc(MAX_RANK_LEN + 1)) == NULL){
 	    printf("Rank %d: Error allocating memory for range server %d name.\n", my_rank, i+1);
 	    fclose(fp);
 	    MPI_Abort(MPI_COMM_WORLD, 100);
 	  }
-	  memset(o->rangeSvrs[i], '\0', MAX_HOST_NAME_LEN);
+	  memset(o->rangeSvrs[i], '\0', MAX_RANK_LEN);
 	  if(fscanf(fp, "%s", o->rangeSvrs[i]) != 1){
 	    printf("Rank %d: Problem reading range server name %d from the input parameters file.\n", my_rank, i+1);
 	    fclose(fp);
@@ -873,13 +873,13 @@ int getInput(int my_rank, char *fname, char *mdhim_fname, struct options *o, int
 	}
       }
       else if(!strcmp(wkCommand, "serversperhost")){
-	if( (o->numRangeSvrsByHost = (int *)malloc(o->numRangeSvrs*sizeof(int))) == NULL){
+	if( (o->numRangeSvrsByRank = (int *)malloc(o->numRangeSvrs*sizeof(int))) == NULL){
 	  printf("Rank %d: Error allocating memory for number of range servers per host.\n", my_rank);
 	  fclose(fp);
 	  MPI_Abort(MPI_COMM_WORLD, 100);
 	}
 	for(i = 0; i < o->numRangeSvrs; i++)
-	  if(fscanf(fp, "%d", &(o->numRangeSvrsByHost[i])) != 1){
+	  if(fscanf(fp, "%d", &(o->numRangeSvrsByRank[i])) != 1){
 	    printf("Rank %d: Problem reading number of range servers per host %d from the input parameters file.\n", my_rank, i+1);
 	    fclose(fp);
 	    MPI_Abort(MPI_COMM_WORLD, 100);
@@ -988,7 +988,7 @@ int getInput(int my_rank, char *fname, char *mdhim_fname, struct options *o, int
     }
     printf("Please enter the list of hostnames of the range servers, each name separated by a space: \n");
     for(i = 0; i < o->numRangeSvrs; i++){
-      if( (o->rangeSvrs[i] = (char *)malloc(MAX_HOST_NAME_LEN + 1)) == NULL){
+      if( (o->rangeSvrs[i] = (char *)malloc(MAX_RANK_LEN + 1)) == NULL){
 	printf("Rank %d: Error allocating memory for range server %d name.\n", my_rank, i+1);
 	MPI_Abort(MPI_COMM_WORLD, 100);
       }
@@ -1001,12 +1001,12 @@ int getInput(int my_rank, char *fname, char *mdhim_fname, struct options *o, int
     }
     
     printf("For each range server, please enter the number of servers per host: \n");
-    if( (o->numRangeSvrsByHost = (int *)malloc(o->numRangeSvrs*sizeof(int))) == NULL){
+    if( (o->numRangeSvrsByRank = (int *)malloc(o->numRangeSvrs*sizeof(int))) == NULL){
       printf("Rank %d: Error allocating memory for number of range servers per host.\n", my_rank);
       MPI_Abort(MPI_COMM_WORLD, 100);
     }
     for(i = 0; i < o->numRangeSvrs; i++)
-      if(scanf("%d", &(o->numRangeSvrsByHost[i])) != 1){
+      if(scanf("%d", &(o->numRangeSvrsByRank[i])) != 1){
 	printf("Rank %d: Problem reading number of range servers per host %d from the command line.\n", my_rank, i+1);
 	MPI_Abort(MPI_COMM_WORLD, 100);
       }	
@@ -1154,7 +1154,7 @@ int main(int argc, char **argv){
     o.keyMaxPad[0] = -1;
     o.maxDataSize = 0;
     o.maxRecsPerRange = 0;
-    o.numRangeSvrsByHost = NULL;
+    o.numRangeSvrsByRank = NULL;
     strncpy(o.recordPath, "", TEST_BUFLEN-1);
     
     if(argc > 3){
@@ -1239,19 +1239,19 @@ int main(int argc, char **argv){
       MPI_Abort(MPI_COMM_WORLD, 100);
     }
     for(i = 0; i < o.numRangeSvrs; i++){
-      if( (o.rangeSvrs[i] = (char *)malloc(MAX_HOST_NAME_LEN+1)) == NULL){
+      if( (o.rangeSvrs[i] = (char *)malloc(MAX_RANK_LEN+1)) == NULL){
 	printf("Rank %d: Error allocating memory for range server %d name.\n", my_rank, i+1);
 	MPI_Abort(MPI_COMM_WORLD, 100);
       }
-      memset(o.rangeSvrs[i], '\0', MAX_HOST_NAME_LEN+1);
+      memset(o.rangeSvrs[i], '\0', MAX_RANK_LEN+1);
     }
-    if( (o.numRangeSvrsByHost = (int *)malloc(o.numRangeSvrs*sizeof(int))) == NULL){
+    if( (o.numRangeSvrsByRank = (int *)malloc(o.numRangeSvrs*sizeof(int))) == NULL){
       printf("Rank %d: Error allocating memory for number of range servers per host.\n", my_rank);
       MPI_Abort(MPI_COMM_WORLD, 100);
     }
   }
 
-  rc = MPI_Bcast(o.numRangeSvrsByHost, o.numRangeSvrs, MPI_INT, 0, MPI_COMM_WORLD);
+  rc = MPI_Bcast(o.numRangeSvrsByRank, o.numRangeSvrs, MPI_INT, 0, MPI_COMM_WORLD);
   checkReturn(rc, MPI_SUCCESS, my_rank, 'b', "Number of range servers by host.");
   rc = MPI_Bcast(o.recordPath, (pathLen + 1), MPI_CHAR, 0, MPI_COMM_WORLD);
   checkReturn(rc, MPI_SUCCESS, my_rank, 'b', "Path to MDHIM files.");
@@ -1265,7 +1265,7 @@ int main(int argc, char **argv){
   for(i = 0; i < o.numRangeSvrs; i++){
     PRINT_TESTER_DEBUG ("o->rangeSvrs[%d] = %s\n", i,o.rangeSvrs[i]); 
     
-    rc = MPI_Bcast(o.rangeSvrs[i], MAX_HOST_NAME_LEN, MPI_CHAR, 0, MPI_COMM_WORLD);
+    rc = MPI_Bcast(o.rangeSvrs[i], MAX_RANK_LEN, MPI_CHAR, 0, MPI_COMM_WORLD);
     checkReturn(rc, MPI_SUCCESS, my_rank, 'b', "Range server name.");
   }
   
@@ -1357,7 +1357,7 @@ int main(int argc, char **argv){
       queue_number = 0;
       for(indx = 0; indx < num_queues; indx++){
 	if(workQueue[indx].data_size > 0) queue_number++;
-  PRINT_TESTER_DEBUG ("Tester Rank %d: workQueue %d has %d elements in it.\n", my_rank, indx, workQueue[indx].data_size);
+	PRINT_TESTER_DEBUG ("Tester Rank %d: workQueue %d has %d elements in it.\n", my_rank, indx, workQueue[indx].data_size);
       }
       
       if(queue_number == 0){
@@ -1527,7 +1527,8 @@ int main(int argc, char **argv){
        Everyone except rank 0 calls mdhimInit to start up range servers. 
        Remember, rank 0 does not participate in the MDHIM job
     */
-    rc = mdhimInit(&fd, o.numRangeSvrs, o.rangeSvrs, o.numRangeSvrsByHost, o.commType, mdhimComm);
+    printf("Calling mdhim init\n");
+    rc = mdhimInit(&fd, o.numRangeSvrs, o.rangeSvrs, o.numRangeSvrsByRank, o.commType, mdhimComm);
     checkReturn(rc, MDHIM_SUCCESS, my_rank, 'm', "Problem with mdhimInit.");
     
     /*

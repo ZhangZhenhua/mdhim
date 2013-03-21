@@ -30,7 +30,7 @@
 #define DATATAG 99
 #define DONETAG 100
 #define QUITTAG 101
-#define HOSTNAMELEN 255
+#define RANKLEN 24
 #define KEYTAG 89
 #define MAX_PROCS_PER_SRV 10
 #define MAX_RANGES_PER_SRV 100

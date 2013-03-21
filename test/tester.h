@@ -7,7 +7,7 @@
 #include "debug.h"
 
 #define TEST_BUFLEN       2048
-#define MAX_HOST_NAME_LEN 2048
+#define MAX_RANK_LEN 24
 #define MAX_KEY_LEN 256
 #define MAX_KEYS 2048
 #define MAXCOMMANDS 5
@@ -39,7 +39,7 @@ struct options {
   int keyMaxPad[MAX_KEYS];
   int maxDataSize;
   int maxRecsPerRange;
-  int *numRangeSvrsByHost;
+  int *numRangeSvrsByRank;
   char recordPath[TEST_BUFLEN];
 };
 

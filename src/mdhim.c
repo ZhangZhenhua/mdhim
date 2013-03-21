@@ -1582,14 +1582,13 @@ int mdhimFlush(MDHIMFD_t *fd) {
       err = MDHIM_ERROR_MEMORY;
     }
     
-    range_ptr = fd->flush_list.range_list;
-    
+    memset(tempRangeData, 0, sizeof(struct rangeDataTag));
+    range_ptr = fd->flush_list.range_list;    
     for(indx=0; indx < numFlushRanges; indx++){
-      MPI_Bcast(&tempRangeData, sizeof(tempRangeData), MPI_CHAR, fd->range_srv_info[0].range_srv_num, fd->mdhim_comm);
+      printf("Rank %d: Range srv num: %d, rank: %s", fd->mdhim_rank, fd->range_srv_info[0].range_srv_num, fd->range_srv_info[0].name);
+      MPI_Bcast(tempRangeData, sizeof(struct rangeDataTag), MPI_CHAR, fd->range_srv_info[0].range_srv_num, fd->mdhim_comm);
       rc = createAndCopyNode(&(fd->flush_list.range_list), tempRangeData->range_start, tempRangeData);
-      fd->flush_list.num_ranges += 1 - rc;
-      
-      
+      fd->flush_list.num_ranges += 1 - rc;            
     }
   }
   /*
@@ -1961,14 +1960,12 @@ int mdhimGet( MDHIMFD_t *fd, int keyIndx, int ftype, int *record_num, void *okey
    Returns: MDHIM_SUCCESS on success or one of the following on failure 
    MDHIM_ERROR_INIT, MDHIM_ERROR_BASE or MDHIM_ERROR_MEMORY;
 */
-int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSvrsByHost, int commType, MPI_Comm inComm ){
-  
-  char hostName[HOSTNAMELEN];
-  
+int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSvrsByRank, int commType, MPI_Comm inComm ){  
   int i, indx, j;
   int mdhimRank = -1;
+  char rankStr[RANKLEN];
   int *rangeNameIndx = NULL;
-  int *rangeSvrsByHostDup = NULL;
+  int *rangeSvrsByRankDup = NULL;
 
   MPI_Group mdhim_group, range_svr_group;
 
@@ -2001,7 +1998,7 @@ int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSv
 
   fd->rangeSvr_size = 0;
   for(i = 0; i < numRangeSvrs; i++)
-    fd->rangeSvr_size += numRangeSvrsByHost[i];
+    fd->rangeSvr_size += numRangeSvrsByRank[i];
   
   PRINT_INIT_DEBUG ("Rank %d: Number of range servers = %d\n", mdhimRank, fd->rangeSvr_size);
 
@@ -2017,15 +2014,15 @@ int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSv
      If your host name is in the array, send to rank zero the index in 
      the range server name list of what host you are on starting with 1 not 0.
   */
-  gethostname(hostName, HOSTNAMELEN);
   
   indx = 0;
-  for (i = 0; i < numRangeSvrs; i++)
-    if(strncmp(hostName, rangeSvrs[i], strlen(rangeSvrs[i])) == 0)
+  sprintf(rankStr, "%d", mdhimRank);
+  for (i = 0; i < numRangeSvrs; i++) {
+    if (strncmp(rankStr, rangeSvrs[i], strlen(rangeSvrs[i])) == 0) {
       indx = i+1;
-
-  PRINT_INIT_DEBUG ("Rank %d: My host name is %s found at index %d\n", mdhimRank, hostName, indx);
-
+    }
+  }
+  PRINT_INIT_DEBUG ("Rank %d: found at index %d\n", mdhimRank, indx);
   if(mdhimRank == 0){
     if( (rangeNameIndx = (int *)malloc(sizeof(int) * fd->mdhim_size)) == NULL){
       printf("Rank %d: mdhimInit Error - Unable to allocate memory for the array of range server membership array.\n", mdhimRank);
@@ -2042,13 +2039,13 @@ int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSv
   MPI_Gather(&indx, 1, MPI_INT, rangeNameIndx, 1, MPI_INT, 0, inComm);
   
   if(mdhimRank == 0){    
-    if( (rangeSvrsByHostDup = (int *)malloc(numRangeSvrs * sizeof(int))) == NULL){
+    if( (rangeSvrsByRankDup = (int *)malloc(numRangeSvrs * sizeof(int))) == NULL){
       printf("Rank %d: mdhimInit Error - Unable to allocate memory for the array of range server name count.\n", mdhimRank);
       return MDHIM_ERROR_MEMORY;
     }
     
     for(i = 0; i < numRangeSvrs; i++)
-      rangeSvrsByHostDup[i] = numRangeSvrsByHost[i];
+      rangeSvrsByRankDup[i] = numRangeSvrsByRank[i];
     
     if( (fd->range_srv_info = (RANGE_SRV *)malloc(fd->rangeSvr_size * sizeof(RANGE_SRV)) ) == NULL){
       printf("Rank %d: mdhimInit Error - Unable to allocate memory for the array of range server name count.\n", mdhimRank);
@@ -2061,13 +2058,13 @@ int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSv
       
       if(indx > 0){
 	indx--;
-	if(rangeSvrsByHostDup[indx] > 0){
-	  fd->range_srv_info[j].range_srv_num = i; /* rank in mdhim_comm */
-	  fd->range_srv_info[j].name = (char *)malloc(HOSTNAMELEN);
-	  memset(fd->range_srv_info[j].name, '\0', HOSTNAMELEN);
+	if(rangeSvrsByRankDup[indx] > 0){
+	  fd->range_srv_info[j].range_srv_num = atoi(rangeSvrs[indx]); /* rank in mdhim_comm */
+	  fd->range_srv_info[j].name = (char *)malloc(RANKLEN);
+	  memset(fd->range_srv_info[j].name, '\0', RANKLEN);
 	  strcpy(fd->range_srv_info[j].name, rangeSvrs[indx]);
 	  j++;
-	  rangeSvrsByHostDup[indx]--;
+	  rangeSvrsByRankDup[indx]--;
 	}
       }
     }
@@ -2081,13 +2078,14 @@ int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSv
       return MDHIM_ERROR_BASE;
     }
     
-    for(i = 0; i < numRangeSvrs; i++)
-      if(rangeSvrsByHostDup[indx] != 0){
+    for(i = 0; i < numRangeSvrs; i++) {
+      if(rangeSvrsByRankDup[indx] != 0){
 	printf("Rank %d: mdhimInit Error - Range server %s does not have enough procs to be a range server.\n", mdhimRank, rangeSvrs[i]);
 	return MDHIM_ERROR_BASE;
       }
-    
-    free(rangeSvrsByHostDup);
+    }
+
+    free(rangeSvrsByRankDup);
     free(rangeNameIndx);
 
     /*
@@ -2137,11 +2135,11 @@ int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSv
 
   for(j=0; j < fd->rangeSvr_size; j++){
     if(mdhimRank > 0){
-      fd->range_srv_info[j].name = (char *)malloc(HOSTNAMELEN);
-      memset(fd->range_srv_info[j].name, '\0', HOSTNAMELEN);
+      fd->range_srv_info[j].name = (char *)malloc(RANKLEN);
+      memset(fd->range_srv_info[j].name, '\0', RANKLEN);
     }
-    MPI_Bcast(fd->range_srv_info[j].name, HOSTNAMELEN, MPI_BYTE, 0, inComm);
-    PRINT_INIT_DEBUG ("Rank %d mdhimInit: Hostname %d = %s\n", mdhimRank, j, fd->range_srv_info[j].name);
+    MPI_Bcast(fd->range_srv_info[j].name, RANKLEN, MPI_BYTE, 0, inComm);
+    PRINT_INIT_DEBUG ("Rank %d mdhimInit: Index %d = %s\n", mdhimRank, j, fd->range_srv_info[j].name);
   }
 
   /* 
@@ -2162,7 +2160,7 @@ int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSv
     Create an MPI Communicator for range servers
   */
   fd->range_srv_flag = 0;
-  for(i = 0; i < fd->rangeSvr_size; i++){
+  for(i = 0; i < fd->rangeSvr_size; i++) {
     if(fd->mdhim_rank == fd->range_srv_info[i].range_srv_num){
       fd->range_srv_flag = 1;      
     }
@@ -2177,7 +2175,7 @@ int mdhimInit(MDHIMFD_t *fd, int numRangeSvrs, char **rangeSvrs, int *numRangeSv
     if(fd->mdhim_rank == fd->range_srv_info[i].range_srv_num){
       
       if(spawn_mdhim_server(fd) != 0){  
-	fprintf( stderr, "Rank %d: mdhimInit Error - Spawning thread failed on host %s with error %s\n", fd->mdhim_rank, hostName, strerror( errno ));
+	fprintf( stderr, "Rank %d: mdhimInit Error - Spawning thread failed with error %s\n", fd->mdhim_rank, strerror( errno ));
 	return MDHIM_ERROR_BASE;
       }
       
