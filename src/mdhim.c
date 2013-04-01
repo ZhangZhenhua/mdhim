@@ -1288,10 +1288,9 @@ int mdhimFind( MDHIMFD_t *fd, int keyIndx, int ftype, void *ikey, int *record_nu
   rc = searchList(fd->flush_list.range_list, &prev_flush, &cur_flush, start_range);
   
   if(cur_flush == NULL){
-    printf("Rank %d mdhimFind: Error - Unable to find index of start range for key %s in flushed range data.\n", fd->mdhim_rank, (char *)ikey);
+    printf("Rank %d mdhimFind: Warning - Unable to find index of start range for key %s in flushed range data.\n", fd->mdhim_rank, (char *)ikey);
     *record_num = -1;
     *okey_len = 0;
-    return MDHIM_ERROR_IDX_RANGE;
   }
   else if((ftype == MDHIM_EQ) || (ftype == MDHIM_EQF) || (ftype == MDHIM_EQL)){
     
@@ -1347,7 +1346,7 @@ int mdhimFind( MDHIMFD_t *fd, int keyIndx, int ftype, void *ikey, int *record_nu
      and parsing the results. 
   */
   if(!found){
-    if( (server = whichServer(cur_flush->range_start, fd->max_recs_per_range, fd->rangeSvr_size)) < 0){
+    if( (server = whichServer(start_range, fd->max_recs_per_range, fd->rangeSvr_size)) < 0){
       printf("Rank %d mdhimFind: Error - Can't find server for key %s.\n", fd->mdhim_rank, (char *)ikey);
       *record_num = -1;
       *okey_len = 0;

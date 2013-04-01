@@ -1,0 +1,7 @@
+* open
+1 insert 5 dkey0 ddata0
+1 insert 5 fkey0 fcata0
+1 find 1 MDHIM_EQ akey0
+1 find 1 MDHIM_EQ fkey0
+* flush
+* finalize 0
