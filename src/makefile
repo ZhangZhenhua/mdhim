@@ -1,5 +1,5 @@
 MPI_ROOT	= /usr/local
-PBL_ROOT	= ../data_stores/pbl_1_04_04/src
+PBL_ROOT	= /home/zhangzh/pbl_1_04_04/src
 
 CC	= mpicc -g -O0
 CLIBS	= -L${MPI_ROOT}/lib -lmpi -L${PBL_ROOT} -lpbl
@@ -9,7 +9,8 @@ CFLAGS	=
 PBLOBJ	= pbl.o
 MDHIMOBJ	= mdhim.o
 
-all:	mdhim.o mdhim_dswrap.o mdhim_hash.o mdhim_link.o lib
+all:	mdhim.o mdhim_dswrap.o mdhim_hash.o mdhim_link.o mdhim_idxtable.o \
+	mdhim_map.o lib
 
 mdhim.o: mdhim.c mdhim_dswrap.o
 	$(CC) -c mdhim.c mdhim_dswrap.o $(CINC) $(CLIBS)
@@ -23,8 +24,15 @@ mdhim_hash.o: mdhim_hash.c
 mdhim_link.o: mdhim_link.c
 	$(CC) -c mdhim_link.c $(CINC) $(CLIBS)
 
+mdhim_idxtable.o: mdhim_idxtable.c
+	$(CC) -c mdhim_idxtable.c $(CINC) $(CLIBS)
+
+mdhim_map.o: mdhim_map.c
+	$(CC) -c mdhim_map.c $(CINC) $(CLIBS)
+
 lib:	
-	ar rvs libmdhim.a mdhim.o mdhim_link.o mdhim_hash.o mdhim_dswrap.o
+	ar rvs libmdhim.a mdhim.o mdhim_link.o mdhim_hash.o mdhim_dswrap.o \
+		mdhim_idxtable.o mdhim_map.o
 
 clean:
 	rm -rf *.o *.o libmdhim.a
