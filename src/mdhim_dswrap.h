@@ -59,7 +59,8 @@ extern int isamDeleteRecord(pblIsamFile_t *isam);
 extern int isamFindKey(pblIsamFile_t *isam, int which, int keyIndx, char *searchKey, int searchKeyLen, char *outKey, int *outKeyLen, int *recordNum);
 extern int isamFlush(pblIsamFile_t *isam);
 extern int isamGetKey(pblIsamFile_t *isam, int which, int keyIndx, char *outKey, int *outKeyLen, int *recordNum);
-extern int isamInsert(pblIsamFile_t *isam, int numKeys, int *keySize, char * keyBuf, char *dataBuf, int *recordNum);
+extern int isamInsert(pblIsamFile_t *isam, int numKeys, int *keySize, char * keyBuf,
+		int dataSize, char *dataBuf, int *recordNum);
 extern int isamOpen(pblIsamFile_t **isam, char *path, int update, void *fileSettag, int numKeys, char **fileNames, int *keyDup);
 extern int isamReadData(pblIsamFile_t *isam, int dataLen, char *outBuf, long *outBufLen);
 extern int isamReadDataLen(pblIsamFile_t *isam, long *dataLen);

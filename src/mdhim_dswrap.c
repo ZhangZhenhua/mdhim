@@ -466,6 +466,7 @@ int isamGetKey(pblIsamFile_t *isam, int which, int keyIndx, char *outKey, int *o
    numKeys is the number of keys to insert
    keySize is an array of length of keys
    keyBuf is an array of keys. Each key is separated by a space
+   dataSize is length of dataBuf
    dataBuf is the data of the record to insert
 
    Output:
@@ -476,7 +477,8 @@ int isamGetKey(pblIsamFile_t *isam, int which, int keyIndx, char *outKey, int *o
 
    Returns: MDHIM_SUCCESS on success or MDHIM_ERROR_DB_INSERT on failure
 */
-int isamInsert(pblIsamFile_t *isam, int numKeys, int *keySize, char * keyBuf, char *dataBuf, int *recordNum){
+int isamInsert(pblIsamFile_t *isam, int numKeys, int *keySize, char * keyBuf,
+		int dataSize, char *dataBuf, int *recordNum){
 
   char *allKeys = NULL;
   char *p = NULL;
@@ -511,7 +513,8 @@ int isamInsert(pblIsamFile_t *isam, int numKeys, int *keySize, char * keyBuf, ch
      We need to convert the array of keys to what PBL ISAM requires; a 
      string with the length of the key, in binary, preceeding the key. 
   */
-  dataLen = strlen(dataBuf);
+  //dataLen = strlen(dataBuf);
+  dataLen = dataSize;
 
   allKeyLen = strlen(keyBuf);
   allKeyLen++;
